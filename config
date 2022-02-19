@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Main network interface
+main_int="vio0"
+
+# Main IPv4 address
+main_ipv4="127.0.0.1"
+
+# sshd(8) non-standard listening port
+sshd_port="34510"

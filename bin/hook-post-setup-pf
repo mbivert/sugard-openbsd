@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+loadconfs $3
+
+# Timeout after which we consider remote port
+# to be unreacheable.
+w=2
+
+log Ensuring port 22 is closed from outside...
+if nc -vz -w $w $main_ipv4 22 >/dev/null 2>&1; then exit 1; fi
+
+log Ensuring ssh port is opened from outside...
+nc -vz -w $w $main_ipv4 $sshd_port >/dev/null 2>&1
+
+log Close backup ssh link...
+rmsshlink backup-ssh-link-pf

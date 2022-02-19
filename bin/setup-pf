@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+log Asserting pf is enabled...
+rcctl get pf | grep -qF 'pf=YES'
+
+log Installing pf.conf...
+install -o root -g wheel -m 600 $SUGARD/pf.conf /etc/pf.conf
+
+log Checking pf.conf syntax...
+pfctl -nf /etc/pf.conf
+
+log Loading pf with new pf.conf...
+pfctl -f  /etc/pf.conf

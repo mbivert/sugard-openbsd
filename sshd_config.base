@@ -1,0 +1,15 @@
+Port %%sshd_port%%
+
+# Allow passwordless root login
+PermitRootLogin without-password
+
+# Public keys authentication only
+PubkeyAuthentication   yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+# Public keys storage
+AuthorizedKeysFile	.ssh/authorized_keys
+
+# Let sFTP enabled
+Subsystem	sftp	/usr/libexec/sftp-server

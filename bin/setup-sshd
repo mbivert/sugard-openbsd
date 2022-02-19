@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+log Asserting sshd is enabled...
+rcctl get sshd | grep -F sshd_flags | grep -vqF 'sshd_flags=NO'
+
+log Installing /etc/ssh/sshd_config...
+install -o root -g wheel -m 644 $SUGARD/sshd_config /etc/ssh/sshd_config
+
+log Checking sshd_config...
+quietrun sshd -t
+
+log Restarting sshd
+quietrun rcctl restart sshd

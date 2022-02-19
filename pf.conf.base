@@ -1,0 +1,31 @@
+#!/sbin/pfctl -f
+
+# Main network interface
+main_int  = "%%main_int%%"
+
+# (My) IPv4 address
+main_ipv4   = "%%main_ipv4%%"
+
+# SSH port
+sshd_port = %%sshd_port%%
+
+# No filtering for loopback
+set skip on lo
+
+# Block all incoming traffic
+block in
+
+# (Explicitely) allow all outgoing traffic
+pass out all
+
+# Allow incoming ping
+pass in on $main_int inet proto icmp all icmp-type 8 code 0
+
+# Allow incoming ssh
+pass in on $main_int inet proto tcp from any to $main_ipv4 port $sshd_port
+
+# Disgraceful commies
+block in quick from 222.73.54.32
+block in quick from 220.249.106.152
+block in quick from 47.75.162.226
+block in quick from 111.70.4.216

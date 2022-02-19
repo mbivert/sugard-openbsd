@@ -1,0 +1,17 @@
+# pf(8) setup scripts/template
+$HOME/gits/sugard-openbsd/bin/*setup-pf             bin/
+$HOME/gits/sugard-openbsd/pf.conf.base
+
+# sshd(8) setup scripts/template
+$HOME/gits/sugard-openbsd/bin/*setup-sshd           bin/
+$HOME/gits/sugard-openbsd/sshd_config.base
+
+# Base configuration
+$HOME/gits/sugard-openbsd/config                    config.openbsd-base
+
+# Required by sugard-openbsd-base's scripts.
+$HOME/gits/sugar/sugar.lib                          bin/
+
+# OpenBSD implementation of some of the default's sugar.lib OS
+# specific functions
+$HOME/gits/sugard-openbsd/sugar.lib.OpenBSD         bin/

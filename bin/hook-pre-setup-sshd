@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+log Preparing sshd_config for sync...
+samurai $3 $3/sshd_config.base > $3/sshd_config
+rm         $3/sshd_config.base
+
+log Ensure we have a backup ssh link...
+mksshlink backup-ssh-link-sshd $1

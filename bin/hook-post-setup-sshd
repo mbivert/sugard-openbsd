@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. `which sugar.lib`
+loadconfs $3
+
+log Ensure we can ssh to remote server...
+ssh -p $sshd_port root@$main_ipv4 echo ping | grep -F ping > /dev/null
+
+log Close backup ssh link...
+rmsshlink backup-ssh-link-sshd

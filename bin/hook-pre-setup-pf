@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+log Preparing pf.conf for sync...
+samurai $3 $3/pf.conf.base > $3/pf.conf
+rm         $3/pf.conf.base
+
+log Ensure we have a backup ssh link...
+mksshlink backup-ssh-link-pf $1
