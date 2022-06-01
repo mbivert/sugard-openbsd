@@ -1,0 +1,4 @@
+22              close
+%%http_port%%   open
+%%https_port%%  open
+%%http_lport%%  close

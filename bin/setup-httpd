@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+log Asserting httpd is enabled...
+assertenabled httpd
+
+log Installing httpd.conf...
+install -o root -g wheel -m 600 $SUGARD/httpd.conf /etc/httpd.conf
+
+log Installing /etc/httpd/...
+install -o root -g wheel -m 700 -d /etc/httpd
+rm /etc/httpd/*
+for x in $SUGARD/httpd/*.conf; do
+	if [ ! -e "$x" ]; then break; fi
+	y=`basename $x`
+	log Installing $y...
+	install -o root -g wheel -m 600 $x /etc/httpd/$y
+done
+
+log Checking httpd.conf...
+quietrun httpd -n
+
+log Restarting httpd...
+quietrun rcctl restart httpd

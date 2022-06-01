@@ -1,0 +1,91 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Asserting httpd is enabled...
+assertenabled httpd
+
+log Asserting relayd is enabled...
+assertenabled relayd
+
+log Installing 'acme-client(1)' secrets directory...
+install -d -o root -g daemon -m 755 $httpd_chroot/$acme_dir
+
+log Ensuring restricted permissions on /etc/ssl/...
+install -d -o root -g wheel -m 700 /etc/ssl
+install -d -o root -g wheel -m 700 /etc/ssl/private
+chmod 0600 /etc/ssl/private/*.key
+
+# Setup certificates via acme-client(1) using the provided
+# configuration file, for the given domain.
+#
+# Input:
+#	$1 : acme-client.conf(5) file to use
+#	$2 : domain for which we want to setup certificates
+#	$3 : grep(1) regexp to be matched against issuer
+# Output:
+#	Certificate issuer on stdout
+setupcerts() {
+	log Checking `basename $1`...
+	quietrun acme-client -n -f $1
+
+	log Updating/generating certificates for $2...
+	quietrun acme-client -f $1 -Fv $2
+
+	log Checking relayd.conf...
+	quietrun relayd -n
+
+	log Restarting relayd to use new certificates for $2...
+	quietrun rcctl restart relayd
+
+	# Meh: the ls is slow enough to get relayd started; the following
+	# gettlsissuer fails otherwise.
+	if ! rcctl ls started|grep -q relayd; then sleep 2; fi
+
+	log Ensuring proper certificate issuer for given domain...
+	x=`gettlsissuer $2`
+	if ! echo "$x" | grep -q "$3"; then
+		fail "setupcerts: unexpected issuer ($3):" $x
+	fi
+}
+
+# Try staging setup, if there's either no certificate, or
+# if we're using a dummy self-signed certificate created to start
+# relayd (cf. './setup-relayd:/zhongmu.eu').
+#
+# Input:
+#	$1 : domain name
+# Output
+trystaging() {
+	if ! gettlsissuer $1 | grep -q 'Let.s.Encrypt'; then
+		log Trying staging certificate first...
+		setupcerts $SUGARD/acme-client-staging.conf $1 'Let.s.Encrypt.*STAGING'
+	fi
+}
+
+# Try real real (non-staging), if we're currently successfully setup
+# for staging.
+#
+# No-op if we already have genuine-certificates, even if they could
+# be updated.
+#
+# Input:
+#	$1 : domain name
+# Output:
+tryreal() {
+	if gettlsissuer $1 | grep -q 'Let.s.Encrypt.*STAGING'; then
+		log Trying real certificates...
+		setupcerts $SUGARD/acme-client.conf $1 '/O=Let.s.Encrypt/'
+	fi
+}
+
+skipec $SUGARD/tls.names | awk '{ print $1 }' | while read x; do
+	trystaging $x
+done
+
+skipec $SUGARD/tls.names | awk '{ print $1 }' | while read x; do
+	tryreal $x
+done
+
+log Installing acme-client.conf...
+install    -o root -g wheel  -m 600 $SUGARD/acme-client.conf       /etc/acme-client.conf

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+# TODO:
+#	- basic HTTP access tested in hook-post-setup-httpd
+#	- ports availability tested in hook-post-setup-pf
+#	- SSL certificates issuers tested in hook-post-setup-tls
+#
+# We could want to check things like caching here.
+# Maybe we could want a way to run other checks when this
+# post hooks is ran alone?
+

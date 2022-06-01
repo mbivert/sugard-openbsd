@@ -1,0 +1,11 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Preparing rc.conf.local for sync...
+if [ -e $2/rc.conf.local ]; then
+	cp $2/rc.conf.local $3/rc.conf.local
+else
+	mv $3/rc.conf.local.base $3/rc.conf.local
+fi
+

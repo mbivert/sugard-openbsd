@@ -1,0 +1,50 @@
+# Main (public) IPv4 address
+main_ipv4 = "%%main_ipv4%%"
+
+# httpd(8) ip/"local" port
+lo_ipv4    = "%%lo_ipv4%%"
+http_lport = "%%http_lport%%"
+
+# HTTPs port
+https_port = "%%https_port%%"
+
+# TODO: proper HTTP headers, cf.
+#	https://securityheaders.com/
+#	https://www.alexander-pluhar.de/openbsd-webserver.html
+#	https://doc.huc.fr.eu.org/fr/web/httpd/relayd-headers-httpd/#httpd
+
+# TODO: referer logging:
+#	https://doc.huc.fr.eu.org/en/web/httpd/relayd-log/
+#
+#	We would also need to update our analytics tool; unfortunately,
+#	this can't be forwarded to httpd's access.log, so we'll have
+#	to patch things up.
+
+# Cache static files / manage HTTPs
+http protocol "main-https" {
+	# Static files caching
+	match request path "/*.css"   tag "CACHE"
+	match request path "/*.html"  tag "CACHE"
+	match request path "/*.js"    tag "CACHE"
+	match request path "/*.ttf"   tag "CACHE"
+	match request path "/*.woff2" tag "CACHE"
+	match request path "/*.gz"    tag "CACHE"
+	match request path "/*.gif"   tag "CACHE"
+
+	# Get client IP in httpd logs
+	match header set "X-Forwarded-For" value "$REMOTE_ADDR"
+
+	match response tagged "CACHE" header set "Cache-Control" value "public, max-age=31104000"
+
+	# TODO: recommended; document
+	tcp { nodelay, sack, socket buffer 65536, backlog 100 }
+
+	# TLS setup
+	include "/etc/relayd/tls.conf"
+}
+
+relay "www" {
+	listen on $main_ipv4 port $https_port tls
+	protocol "main-https"
+	forward to $lo_ipv4 port $http_lport
+}

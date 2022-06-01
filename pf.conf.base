@@ -6,8 +6,10 @@ main_int  = "%%main_int%%"
 # (My) IPv4 address
 main_ipv4   = "%%main_ipv4%%"
 
-# SSH port
-sshd_port = %%sshd_port%%
+# SSH/HTTP/HTTPs ports
+sshd_port  = %%sshd_port%%
+http_port  = %%http_port%%
+https_port = %%https_port%%
 
 # No filtering for loopback
 set skip on lo
@@ -21,8 +23,10 @@ pass out all
 # Allow incoming ping
 pass in on $main_int inet proto icmp all icmp-type 8 code 0
 
-# Allow incoming ssh
+# Allow incoming SSH/HTTP/HTTPs
 pass in on $main_int inet proto tcp from any to $main_ipv4 port $sshd_port
+pass in on $main_int inet proto tcp from any to $main_ipv4 port $http_port
+pass in on $main_int inet proto tcp from any to $main_ipv4 port $https_port
 
 # Disgraceful commies
 block in quick from 222.73.54.32

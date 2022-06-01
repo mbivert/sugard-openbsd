@@ -1,0 +1,7 @@
+setup-rc.conf.local
+setup-pf
+setup-sshd
+setup-relayd
+setup-httpd
+setup-acme-client
+setup-cron

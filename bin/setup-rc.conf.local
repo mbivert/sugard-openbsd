@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Installing rc.conf.local...
+install -o root -g wheel  -m 644 $SUGARD/rc.conf.local /etc/rc.conf.local

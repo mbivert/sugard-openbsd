@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+# Per-domain/sub-domain specific configuration.
+mkdir -p $3/httpd/
+for x in $2/httpd/*.conf; do
+	if [ ! -e "$x" ]; then break; fi
+	y=`basename $x`
+	log Preparing $y for sync...
+	samurai $3 $x > $3/httpd/$y
+done
+
+# Generate main httpd.conf(5) so as to contain
+# the base and one server entry per domain/sub-domain
+log Preparing httpd.conf...
+(
+	samuraibase $2 $3 httpd
+
+	# TODO/XXX maybe this could be included by the default
+	# httpd.conf.base instead of being appended to it (/etc/httpd/tls.conf)?
+	skipec $2/tls.names | awk '
+		{ for (i = 1; i <= NF; i++) print $i }
+	' | while read x; do
+		echo ''
+		echo "server \"$x\" {"
+
+		if [ -e "$3/httpd/domain-base.conf" ]; then
+			echo '	include "/etc/httpd/domain-base.conf"'
+		fi
+
+		if [ -e "$3/httpd/$x.conf" ]; then
+			echo '	include "/etc/httpd/'$x'.conf"'
+		fi
+
+		echo '}'
+	done
+) > $3/httpd.conf

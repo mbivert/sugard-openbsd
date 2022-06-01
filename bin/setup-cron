@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Setting up crontabs...
+for u in $SUGARD/crontabs/*; do
+	crontab -u `basename $u` $u
+done

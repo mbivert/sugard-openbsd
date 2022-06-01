@@ -35,17 +35,19 @@ assertgroup() {
 	fi
 }
 
-# Re-create TLS certificates symlinks for given domain/ip.
+# Assert a given service is enabled
 #
-# NOTE: this is because we're using OpenBSD relayd(8) which
-# apparently by default look for them as IPv4. We could
-# configure things differently.
+# TODO: use it everywhere
 #
 # Input:
-#	$1 : domain name (e.g. zhongmu.eu)
-#	$1 : IPv4
+#	$1: service name
 # Output:
-lnsslip() {
-	ln -fs /etc/ssl/private/$1.key /etc/ssl/private/$2.key
-	ln -fs /etc/ssl/$1.pem         /etc/ssl/$2.crt
+#	Will indirectly exits; assumes set -e
+assertenabled() {
+	# Special case
+	if [ "$1" == "pf" ]; then
+		rcctl get pf | grep -qF 'pf=YES'
+	else
+		rcctl get $1 | grep -F $1_flags | grep -vqF $1'_flags=NO'
+	fi
 }

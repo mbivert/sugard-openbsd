@@ -1,0 +1,25 @@
+# httpd(8) ip/local port
+lo_ipv4    = "%%lo_ipv4%%"
+http_lport = "%%http_lport%%"
+
+# (My) IPv4 address
+main_ipv4  = "%%main_ipv4%%"
+
+# HTTPs listening port (typically, 443, handled by relayd(8))
+https_port  = "%%https_port%%"
+
+# HTTP listening port (typically, 80, systematically redirected
+# (HTTP 301) to 443)
+http_port  = "%%http_port%%"
+
+# For clarity (default value)
+chroot "%%httpd_chroot%%"
+
+# Redirect all HTTP traffic to HTTPs
+server "http-to-https" {
+	listen on 0.0.0.0 port $http_port
+	log style forwarded
+	block return 301 "https://$HTTP_HOST$REQUEST_URI"
+}
+
+include "/etc/httpd/mime-types.conf"

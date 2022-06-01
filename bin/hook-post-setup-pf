@@ -3,17 +3,28 @@
 set -e
 
 . `which sugar.lib`
-loadconfs $3
+loadconfs $3 # $main_ipv4
 
 # Timeout after which we consider remote port
-# to be unreacheable.
+# to be unreachable.
 w=2
 
-log Ensuring port 22 is closed from outside...
-if nc -vz -w $w $main_ipv4 22 >/dev/null 2>&1; then exit 1; fi
+samurai $3 $3/pf.tests | skipec | while read x; do
+	set -- $x
+	port=$1
+	status=$2
+	ip=$3
 
-log Ensuring ssh port is opened from outside...
-nc -vz -w $w $main_ipv4 $sshd_port >/dev/null 2>&1
+	if [ -z "$ip" ]; then ip=$main_ipv4; fi
+
+	if [ "$status" = "open" ]; then
+		log Ensuring $ip:$port is opened...
+		nc -vz $ip $port >/dev/null 2>&1
+	else
+		log Ensuring $ip:$port is closed...
+		if nc -vz -w $w $ip $port >/dev/null 2>&1; then exit 1; fi
+	fi
+done
 
 log Close backup ssh link...
 rmsshlink backup-ssh-link-pf

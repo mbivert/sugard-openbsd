@@ -1,0 +1,31 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Preparing relayd.conf for sync...
+samuraibase $2 $3 relayd > $3/relayd.conf
+
+# We'll need this on the remote to eventually create
+# dummy self-signed certificates.
+log Preparing tls.names for sync...
+cp $2/tls.names $3/tls.names
+
+log Preparing relayd/tls.conf for sync...
+mkdir -p $3/relayd/
+echo -n '' > $3/relayd/tls.conf
+skipec $2/tls.names | awk '{ print $1 }' | while read x; do
+	echo tls keypair $x >> $3/relayd/tls.conf
+done
+
+# Import pre-existing .crt/.key pairs (backups)
+mkdir -p $3/ssl/
+for x in $2/ssl/*.key; do
+	if [ ! -e "$x" ]; then break; fi
+	y=`basename $x`
+	z=`basename $x .key`.crt
+	log Preparing ssl/$y for sync...
+	cp $x $3/ssl/$y
+
+	log Preparing ssl/$z for sync...
+	cp $SUGARD/ssl/$z $3/ssl/$z
+done

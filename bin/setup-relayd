@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+log Asserting relayd is enabled...
+assertenabled relayd
+
+log Installing relayd.conf, relayd/tls.conf...
+install -o root -g wheel -m 600    $SUGARD/relayd.conf     /etc/relayd.conf
+install -o root -g wheel -m 700 -d                         /etc/relayd/
+install -o root -g wheel -m 600    $SUGARD/relayd/tls.conf /etc/relayd/tls.conf
+
+# Installs pre-existing .crt/.key if any
+for x in $SUGARD/ssl/*.crt; do
+	if [ ! -e "$x" ]; then break; fi
+	y=`basename $x`
+	log Installing $x to /etc/ssl/
+	install -o root -g wheel -m 600 $x /etc/ssl/$y
+done
+
+for x in $SUGARD/ssl/*.key; do
+	if [ ! -e "$x" ]; then break; fi
+	y=`basename $x`
+	log Installing $x to /etc/ssl/private
+	install -o root -g wheel -m 600 $x /etc/ssl/private/$y
+done
+
+skipec $SUGARD/tls.names | awk '{ print $1 }' | while read x; do
+	log Making sure we have at least a self-signed certificate for $x...
+	mksscert -g $x
+done
+
+log Checking relayd.conf...
+quietrun relayd -n
+
+log Restarting relayd
+quietrun rcctl restart relayd

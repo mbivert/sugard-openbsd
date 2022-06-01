@@ -3,8 +3,25 @@
 # Main network interface
 main_int="vio0"
 
+# Main loopback IPv4 address
+lo_ipv4="127.0.0.1"
+
 # Main IPv4 address
 main_ipv4="127.0.0.1"
 
 # sshd(8) non-standard listening port
 sshd_port="34510"
+
+# httpd(8), relayd(8): HTTP/HTTPs listening ports.
+http_port=80
+https_port=443
+
+# "Local" port, used for relayd(8) to communicate decrypted TLS
+# traffic to httpd(8).
+http_lport=8080
+
+# httpd(8) chroot directory
+httpd_chroot="/var/www"
+
+# acme-client(1) directory, relative to httpd_chroot
+acme_dir="acme"

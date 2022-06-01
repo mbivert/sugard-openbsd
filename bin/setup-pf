@@ -5,7 +5,7 @@ set -e
 . `which sugar.lib`
 
 log Asserting pf is enabled...
-rcctl get pf | grep -qF 'pf=YES'
+assertenabled pf
 
 log Installing pf.conf...
 install -o root -g wheel -m 600 $SUGARD/pf.conf /etc/pf.conf

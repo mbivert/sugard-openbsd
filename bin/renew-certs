@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+. `dirname $0`/sugar.lib
+
+skipec `dirname $0`/../tls.names | awk '{ print $1 }' | while read x; do
+	set +e; acme-client $x; n=$?; set -e
+	# $n == 2 is success:
+	# EXIT STATUS
+	#	acme-client returns 0 if certificates were changed (revoked or updated),
+	#	1 on failure, or 2 if the certificates didn't change (up to date).
+	if [ "$n" = "1" ]; then
+		fail "failed to renew certificate for $x"
+	fi
+done
+
+rcctl reload relayd

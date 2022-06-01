@@ -1,0 +1,10 @@
+# opts:-k
+https://example.com/test.html      200
+
+# Resetting options
+# opts:
+https://domain.eu/not-found.html 404
+
+# Assuming requests are blocked -- empty HTTP code
+https://domain.eu/test2.html
+

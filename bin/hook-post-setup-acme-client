@@ -1,0 +1,16 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+# XXX/TODO: This is still too clumsy
+skipec $2/tls.names | awk '{ print $1 }' | while read x; do
+	log Checking $x issuer...
+	n=`gettlsissuer $x`
+	if echo "$n" | grep -q 'Let.s.Encrypt'; then
+		if echo "$n" | grep -q STAGING; then
+			fail "Invalid issuer for $x: $n"
+		fi
+	else
+		fail "Invalid issuer for $x: $n"
+	fi
+done

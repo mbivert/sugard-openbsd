@@ -1,0 +1,58 @@
+#!/bin/sh
+
+set -e
+
+. `which sugar.lib`
+
+
+# We'll need this on the remote to know for whom to initiate
+# the certificate aquisition process.
+log Preparing tls.names for sync...
+cp $2/tls.names $3/tls.names
+
+# Create a domain entry of an acme-client.conf(5).
+#
+# Input.
+#	$1 : name of the certificate authority to use
+#	$2 : domain name
+#	$* : alternative names
+# Output:
+#	Section, sent to stdout
+mkdomain() {
+	a=$1; shift
+	n=$1; shift
+	ns=`echo $* | sed 's/ /, /g'`
+
+	cat <<EOF
+
+domain $n {
+	alternative names             { $ns }
+	domain key                    "/etc/ssl/private/$n.key"
+	domain full chain certificate "/etc/ssl/$n.crt"
+	sign with                     $a
+}
+EOF
+}
+
+# XXX/TODO: samuraibase will remove the .conf.base after the
+# first call, for better or for worse.
+t=/tmp/$$.`basename $0`.tmp
+samuraibase $2 $3 acme-client > $t
+
+log Creating acme-client-staging.conf...
+(
+	cat $t
+	skipec $2/tls.names | while read x; do
+		set -- $x
+		mkdomain letsencrypt-staging $*
+	done
+) > $3/acme-client-staging.conf
+
+log Creating acme-client.conf...
+(
+	cat $t
+	skipec $2/tls.names | while read x; do
+		set -- $x
+		mkdomain letsencrypt $*
+	done
+) > $3/acme-client.conf
