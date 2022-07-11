@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. `dirname $0`/sugar.lib
+
+loadconfs $(dirname $(dirname $0)) # ip2location_token
+
+log Make sure 'unzip(1)' is installed...
+quietrun pkg_add unzip--
+
+url='https://www.ip2location.com/download'
+tmpz=/tmp/db.$$.zip
+tmpf=/tmp/db.$$.csv
+
+log Downloading database...
+ftp -M -V -o - $url'/?token='$ip2location_token'&file=DB1LITE' > $tmpz
+
+log Extracting database...
+unzip -q -c $tmpz IP2LOCATION-LITE-DB1.CSV > $tmpf
+
+log Installing database...
+install -o root -g wheel -m 644 $tmpf /etc/ip2location.csv
+
+rm $tmpz $tmpf

@@ -16,3 +16,4 @@ SUGARD=/var/sugard
 30      3       *       *       6       /bin/sh /etc/weekly
 30      5       1       *       *       /bin/sh /etc/monthly
 00     00       *       *       *       /bin/sh $SUGARD/bin/renew-certs
+00     00       *       *       *       /bin/sh $SUGARD/bin/get-ip2location

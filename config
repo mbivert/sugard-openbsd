@@ -34,3 +34,6 @@ gmail_email="foo@gmail.com"
 
 # gmail secret
 gmail_secret=""
+
+# ip2location token
+ip2location_token=''
