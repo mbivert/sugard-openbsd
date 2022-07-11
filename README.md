@@ -7,9 +7,9 @@ They all rely on the behavior and functions from  the default
 so make sure, to import those, e.g. with ``sugar.imports``.
 
 See this [blog post][tales-sugar] for more. For the SSL/TLS setup,
-see [this blog post][tales-le-obsd]. The ``sugard-sample`` provides
-a ``sugard`` example for a basic OpenBSD box, that mostly inherits
-from ``sugard-openbsd``.
+see [this blog post][tales-le-obsd]. The ``sugard.sample/`` directory
+provides a ``sugard/`` example for a basic OpenBSD box, that inherits
+from essentially all of the features supported by ``sugard-openbsd``
 
 [gh-mb-sugar-1]:         https://github.com/mbivert/sugar/tree/master/sugar.1
 [gh-mb-sugar-lib]:       https://github.com/mbivert/sugar/tree/master/sugar.lib
