@@ -12,7 +12,7 @@ log Installing 'acme-client(1)' secrets directory...
 install -d -o root -g daemon -m 755 $httpd_chroot/$acme_dir
 
 log Ensuring restricted permissions on /etc/ssl/...
-install -d -o root -g wheel -m 700 /etc/ssl
+install -d -o root -g wheel -m 755 /etc/ssl
 install -d -o root -g wheel -m 700 /etc/ssl/private
 chmod 0600 /etc/ssl/private/*.key
 
