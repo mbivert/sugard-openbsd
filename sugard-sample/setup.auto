@@ -7,3 +7,4 @@ setup-relayd
 setup-httpd
 setup-acme-client
 setup-cron
+setup-git

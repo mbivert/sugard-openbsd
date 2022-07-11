@@ -32,6 +32,9 @@ $HOME/gits/sugard-openbsd/bin/*setup-cron           bin/
 $HOME/gits/sugard-openbsd/crontabs/root             crontabs/
 $HOME/gits/sugard-openbsd/bin/renew-certs           bin/
 
+# git(1) setup
+$HOME/gits/sugard-openbsd/bin/*setup-git            bin/
+
 # Base configuration
 $HOME/gits/sugard-openbsd/config                    bin/config.base
 

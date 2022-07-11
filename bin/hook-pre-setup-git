@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+loadconfs $3
+
+if [ -z "$gits_dir" ]; then
+	fail '$gits_dir not set in config'
+fi
+
+log Preparing gits repositories for sync...
+mkdir -p $3/gits/
+for x in $gits_dir/*; do
+	if [ ! -d $x/.git ]; then
+		continue
+	fi
+
+	# TODO/XXX maybe rsync(1)-ing the .git would be equivalent
+	# and faster?
+	y=$3/gits/`basename $x`.git
+	if [ -d $y ]; then rm -rf $y; fi
+	quietrun git clone --bare $x $y
+done

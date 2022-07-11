@@ -1,0 +1,30 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Ensuring 'git(1)' is installed...
+quietrun pkg_add git
+
+user=git
+
+if ! groupinfo -e git; then
+	fail "git user is not installed"
+fi
+
+home=`awk  '$1 == "'$user'" { print $4 }' $SUGARD/users`
+group=`awk '$1 == "'$user'" { print $3 }' $SUGARD/users`
+
+if [ -z "$home" ] || [ ! -d "$home" ]; then
+	fail "Home directory for $user user not found: '$home'"
+fi
+
+log Update all remote bare repositories...
+for x in $SUGARD/gits/*.git; do
+	if [ ! -d "$x" ]; then continue; fi
+
+	y=`basename $x`
+	rsync -a $x/ $home/$y/
+#	if [ -d $home/$y ]; then rm -rf $home/$y; fi
+#	cp -rf $x $home/$y
+	chown -R $user:$group $home/$y
+done

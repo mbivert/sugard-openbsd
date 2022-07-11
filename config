@@ -25,3 +25,6 @@ httpd_chroot="/var/www"
 
 # acme-client(1) directory, relative to httpd_chroot
 acme_dir="acme"
+
+# local directory containing git(1) repositories
+gits_dir="$HOME/gits"

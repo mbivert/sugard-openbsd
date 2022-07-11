@@ -1,0 +1,28 @@
+#!/bin/sh
+
+. `which sugar.lib`
+loadconfs $3
+
+user=git
+
+home=`awk '$1 == "'$user'" { print $4 }' $2/users`
+
+log Ensure git remotes are properly setup...
+for x in $gits_dir/*; do
+	if [ ! -d $x/.git ]; then continue; fi
+
+	y=`basename $x`
+	z=ssh://${user}@$main_ipv4:$sshd_port$home/$y.git
+
+	# Shortcut
+	git="git -C $x"
+
+	if ! grep -q "$z" $x/.git/config; then
+		# Update origin if if already exists
+		if $git remote -v | grep -q '^origin'; then
+			quietrun $git remote rm origin
+		fi
+		quietrun $git remote add origin $z
+	fi
+	quietrun $git push --set-upstream origin master
+done
