@@ -2,6 +2,9 @@
 $HOME/gits/sugard-openbsd/bin/*setup-rc.conf.local  bin/
 $HOME/gits/sugard-openbsd/rc.conf.local.base
 
+# Basic motd(5) setup
+$HOME/gits/sugard-openbsd/bin/*setup-motd           bin/
+
 # Basic pf(8) setup
 $HOME/gits/sugard-openbsd/bin/*setup-pf             bin/
 $HOME/gits/sugard-openbsd/pf.conf.base

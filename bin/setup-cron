@@ -4,5 +4,6 @@
 
 log Setting up crontabs...
 for u in $SUGARD/crontabs/*; do
+	log Installing $u crontab...
 	crontab -u `basename $u` $u
 done

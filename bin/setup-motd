@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+if [ -f $SUGARD/motd ]; then
+	log Installing motd...
+	install -o root -g operator -m 664 $SUGARD/motd /etc/motd
+fi

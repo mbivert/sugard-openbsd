@@ -13,5 +13,5 @@ install -o root -g wheel -m 644 $SUGARD/sshd_config /etc/ssh/sshd_config
 log Checking sshd_config...
 quietrun sshd -t
 
-log Restarting sshd
+log Restarting sshd...
 quietrun rcctl restart sshd

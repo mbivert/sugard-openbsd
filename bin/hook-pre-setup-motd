@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+if [ -f "$2/motd" ]; then
+	log Preparing motd for sync...
+	cp $2/motd $3/motd
+fi

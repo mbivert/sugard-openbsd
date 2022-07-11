@@ -35,5 +35,5 @@ done
 log Checking relayd.conf...
 quietrun relayd -n
 
-log Restarting relayd
+log Restarting relayd...
 quietrun rcctl restart relayd
