@@ -1,0 +1,8 @@
+# HTTP is systematically redirected to HTTPs
+http://%%main_ipv4%%/not-found.html 301
+
+# HTTPs on IPv4 (no requests send, no expected code)
+https://%%main_ipv4%%/not-found.html
+
+# opts: -k
+https://%%main_ipv4%%/not-found.html 404

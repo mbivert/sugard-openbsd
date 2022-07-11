@@ -4,22 +4,7 @@ set -e
 
 . `which sugar.lib`
 
-if [ ! -e "$2/httpd.tests" ]; then exit 0; fi
+if [ -e "$2/httpd.tests" ]; then
+	checkurls $2/httpd.tests $3
+fi
 
-o=
-cat $2/httpd.tests | while read x; do
-	# Special comment to set temporary curl arguments
-	if echo "$x" | grep -q '^# opts:'; then
-		o=`echo $x | sed 's/^.......//'`
-		continue
-	fi
-	# Skip comments/empty lines
-	if echo "$x" | sed 's/^#.*//' | grep -q '^$'; then
-		continue
-	fi
-	set -- $x
-
-	# NOTE: we allow $2 to be empty (e.g. relayd(8) blocked requests)
-	log Testing $1 HTTP access "($2)"...
-	checkurl "$1" "$2" "$o"
-done
