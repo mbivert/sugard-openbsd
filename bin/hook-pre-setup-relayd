@@ -3,7 +3,7 @@
 . `which sugar.lib`
 
 log Preparing relayd.conf for sync...
-samuraibase $2 $3 relayd > $3/relayd.conf
+samuraibase $2 $3 relayd.conf > $3/relayd.conf
 
 # We'll need this on the remote to eventually create
 # dummy self-signed certificates.

@@ -5,7 +5,7 @@ set -e
 . `which sugar.lib`
 
 log Preparing pf.conf for sync...
-samuraibase $2 $3 pf > $3/pf.conf
+samuraibase $2 $3 pf.conf > $3/pf.conf
 
 log Ensure we have a backup ssh link...
 mksshlink backup-ssh-link-pf $1

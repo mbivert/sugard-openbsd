@@ -17,7 +17,7 @@ done
 # the base and one server entry per domain/sub-domain
 log Preparing httpd.conf...
 (
-	samuraibase $2 $3 httpd
+	samuraibase $2 $3 httpd.conf
 
 	# TODO/XXX maybe this could be included by the default
 	# httpd.conf.base instead of being appended to it (/etc/httpd/tls.conf)?

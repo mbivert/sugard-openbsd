@@ -37,7 +37,7 @@ EOF
 # XXX/TODO: samuraibase will remove the .conf.base after the
 # first call, for better or for worse.
 t=/tmp/$$.`basename $0`.tmp
-samuraibase $2 $3 acme-client > $t
+samuraibase $2 $3 acme-client.conf > $t
 
 log Creating acme-client-staging.conf...
 (
