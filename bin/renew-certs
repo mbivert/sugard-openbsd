@@ -15,4 +15,4 @@ skipec `dirname $0`/../tls.names | awk '{ print $1 }' | while read x; do
 	fi
 done
 
-rcctl reload relayd
+quietrun rcctl reload relayd
