@@ -1,0 +1,13 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Preparing users and groups files for sync...
+cp $2/groups $3/groups
+cp $2/users  $3/users
+
+log Preparing authorized_keys/ for sync...
+mkdir -p $3/authorized_keys
+if [ -d $2/authorized_keys ]; then
+	cp $2/authorized_keys/* $3/authorized_keys/
+fi

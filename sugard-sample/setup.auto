@@ -1,4 +1,6 @@
 setup-rc.conf.local
+setup-motd
+setup-users-groups
 setup-pf
 setup-sshd
 setup-relayd

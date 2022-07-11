@@ -1,0 +1,67 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+# NOTE: uid/gid update isn't managed. One reason is that
+# were this to happen, updating files ownership cannot
+# be fully automatized in advance, and thus in the general
+# case, would better be performed by specially crafted scripts.
+
+# NOTE: this could have been separated in two distinct
+# setup scripts.
+
+log Installing groups...
+skipec $SUGARD/groups | while read x; do
+	set -- $x
+	group=$1
+	gid=$2
+
+#	if ! grep -q '^'$group':' /etc/group; then
+	if ! groupinfo -e $group; then
+		log Installing group $group...
+		groupadd -g $gid $group
+	fi
+
+	log Asserting $group group is properly installed...
+	assertgroup $group $gid
+done
+
+log Installing users...
+skipec $SUGARD/users | while read x; do
+	set -- $x
+	user=$1
+	uid=$2
+	group=$3
+	home=$4
+	shell=$5
+
+	if ! groupinfo -e $group; then
+		fail "Cannot install user $user: group $group missing"
+	fi
+
+	gid=`groupinfo $group | awk '/^gid/{print $2}'`
+
+	# Avoid potential warning from useradd(8) about
+	# missing home directory / no -m. Proper directory
+	# installation will be done after useradd(8).
+	mkdir -p $home
+
+#	if ! grep -q '^'$user':' /etc/passwd; then
+	if ! userinfo -e $user; then
+		log Installing user $user...
+		useradd -u $uid -g $gid -d $home -s $shell $user
+	fi
+
+	log Install $user user home directory...
+	install -d -o $user -g $group -m 700 $home
+
+	if [ -e $SUGARD/authorized_keys/$user ]; then
+		log Install $user .ssh directory and authorized_keys...
+		install -d -o $user -g $group -m 700 $home/.ssh
+		install    -o $user -g $group -m 600 $SUGARD/authorized_keys/$user \
+		                                     $home/.ssh/authorized_keys
+	fi
+
+	log Asserting $user user is properly installed...
+	assertuser $user $uid $gid $home $shell
+done

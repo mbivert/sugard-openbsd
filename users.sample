@@ -1,0 +1,2 @@
+# <user-name> <uid> <group-name> <home-dir> <shell>
+git           1000   git         /home/git  /usr/local/bin/git-shell
