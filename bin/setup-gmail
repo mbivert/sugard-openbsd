@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# TODO: add a hook-post-setup-gmail that ssh to send a mail and
+# check that mails is indeed properly received.
+
+. `which sugar.lib`
+
+log Installing mail/secrets and smtpd.conf...
+install -o root -g _smtpd -m 640 $SUGARD/mail/secrets    /etc/mail/secrets
+install -o root -g wheel  -m 644 $SUGARD/mail/smtpd.conf /etc/mail/smtpd.conf
+
+log Checking smtpd.conf...
+quietrun smtpd -n
+
+log Restarting smtpd...
+quietrun rcctl restart smtpd

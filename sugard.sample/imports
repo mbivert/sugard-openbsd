@@ -38,6 +38,10 @@ $HOME/gits/sugard-openbsd/bin/*setup-git            bin/
 # package update script
 $HOME/gits/sugard-openbsd/bin/update                bin/
 
+# gmail setup for use via mail(1)/sendmail(1)
+$HOME/gits/sugard-openbsd/bin/*setup-gmail          bin/
+$HOME/gits/sugard-openbsd/mail/*                    mail/
+
 # Base configuration
 $HOME/gits/sugard-openbsd/config                    bin/config.base
 

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Preparing mail/secrets for sync...
+mkdir -p                      $3/mail
+samuraibase $2 $3    mail/secrets  > $3/mail/secrets
+# smtpd.conf already imported by sugar.imports

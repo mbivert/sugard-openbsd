@@ -28,3 +28,9 @@ acme_dir="acme"
 
 # local directory containing git(1) repositories
 gits_dir="$HOME/gits"
+
+# gmail user
+gmail_email="foo@gmail.com"
+
+# gmail secret
+gmail_secret=""
