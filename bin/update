@@ -1,0 +1,20 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Updating all packages...
+quietrun pkg_add -u
+
+log Patching base system...
+set +e
+out=`syspatch 2>&1`
+n=$?
+set -e
+# TODO: this will do for now, but we'll want something
+# cleaner.
+if [ "$n" != "0" ] && [ "$n" != "2" ]; then
+	fail "syspatch: failed ($out)"
+fi
+
+log Run 'locate.updatedb(8)'...
+quietrun /usr/libexec/locate.updatedb

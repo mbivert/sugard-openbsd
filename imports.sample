@@ -35,6 +35,9 @@ $HOME/gits/sugard-openbsd/bin/renew-certs           bin/
 # git(1) setup
 $HOME/gits/sugard-openbsd/bin/*setup-git            bin/
 
+# package update script
+$HOME/gits/sugard-openbsd/bin/update                bin/
+
 # Base configuration
 $HOME/gits/sugard-openbsd/config                    bin/config.base
 
