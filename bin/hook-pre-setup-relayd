@@ -27,5 +27,5 @@ for x in $2/ssl/*.key; do
 	cp $x $3/ssl/$y
 
 	log Preparing ssl/$z for sync...
-	cp $SUGARD/ssl/$z $3/ssl/$z
+	cp $2/ssl/$z $3/ssl/$z
 done
