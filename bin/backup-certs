@@ -14,6 +14,7 @@ pass=/root/.backup-certs.pass
 yd=`date -r $(expr $(date +"%s") - 86400) +"%Y-%m-%d"`
 ywd=$bd/certs-$yd
 
+log Collecting certificates and keys...
 mkdir -p $wd
 skipec $(dirname $0)/../tls.names | while read x _; do
 	cp /etc/ssl/$x.crt         $wd/$x.crt
@@ -24,11 +25,13 @@ tar -C $bd -czf $wd.tgz $lwd/
 
 if [ -d "$ywd" ]; then
 	if diff -r $ywd/ $wd/; then
+		log "Certificates haven't changed since yesterday"
 		exit 0
 	fi
 	echo rm -rf "$ywd"
 fi
 
+log Encrypting new certificates...
 openssl enc -e -aes256 -in $wd.tgz -pass file:$pass -out $wd.tgz.enc
 
 from=$gmail_email
@@ -41,6 +44,7 @@ to=$from
 # Stripped down from http://daemonforums.org/showthread.php?t=3480
 boundary="=======N=E=X=T===$(date | md5)=="
 
+log Sending encrypted archive to $to...
 (
 	cat <<EOF
 From: $from

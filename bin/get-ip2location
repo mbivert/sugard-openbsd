@@ -2,7 +2,7 @@
 
 . `dirname $0`/sugar.lib
 
-loadconfs $(dirname $(dirname $0)) # ip2location_token
+loadconfs $(dirname $0)/../ # ip2location_token
 
 log Make sure 'unzip(1)' is installed...
 quietrun pkg_add unzip--

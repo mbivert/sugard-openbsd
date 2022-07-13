@@ -5,6 +5,7 @@ set -e
 . `dirname $0`/sugar.lib
 
 skipec `dirname $0`/../tls.names | awk '{ print $1 }' | while read x; do
+	log Renewing certificates for $x...
 	set +e; acme-client $x; n=$?; set -e
 	# $n == 2 is success:
 	# EXIT STATUS
@@ -15,4 +16,5 @@ skipec `dirname $0`/../tls.names | awk '{ print $1 }' | while read x; do
 	fi
 done
 
+log Restarting relayd...
 quietrun rcctl reload relayd
