@@ -12,6 +12,7 @@ pass=/root/.backup-certs.pass
 
 # yesterday's date, almost
 yd=`date -r $(expr $(date +"%s") - 86400) +"%Y-%m-%d"`
+ylwd=certs-$yd
 ywd=$bd/certs-$yd
 
 log Collecting certificates and keys...
@@ -23,16 +24,20 @@ done
 
 tar -C $bd -czf $wd.tgz $lwd/
 
+log Encrypting collected certificates...
+openssl enc -e -aes256 -in $wd.tgz -pass file:$pass -out $wd.tgz.enc
+
+log Removing old copies...
+ls $bd | grep -v $ylwd | grep -v $lwd | while read x; do
+	rm -rf "$x"
+done
+
 if [ -d "$ywd" ]; then
-	if diff -r $ywd/ $wd/; then
+	if diff -r $ywd/ $wd/ >/dev/null 2>/dev/null; then
 		log "Certificates haven't changed since yesterday"
 		exit 0
 	fi
-	echo rm -rf "$ywd"
 fi
-
-log Encrypting new certificates...
-openssl enc -e -aes256 -in $wd.tgz -pass file:$pass -out $wd.tgz.enc
 
 from=$gmail_email
 to=$from
