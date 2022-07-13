@@ -4,7 +4,6 @@ set -e
 
 . `which sugar.lib`
 
-
 # We'll need this on the remote to know for whom to initiate
 # the certificate aquisition process.
 log Preparing tls.names for sync...
@@ -56,3 +55,7 @@ log Creating acme-client.conf...
 		mkdomain letsencrypt $*
 	done
 ) > $3/acme-client.conf
+
+# NOTE: we could be more mindful regarding permissions here.
+log Preparing backup-certs.pass for sync...
+cp $2/backup-certs.pass $3/backup-certs.pass

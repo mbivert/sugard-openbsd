@@ -1,8 +1,8 @@
 #
 SHELL=/bin/sh
-PATH=/bin:/sbin:/usr/bin:/usr/sbin
 HOME=/var/log
 SUGARD=/var/sugard
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/var/sugard/bin
 #
 #minute hour    mday    month   wday    [flags] command
 #
@@ -16,4 +16,5 @@ SUGARD=/var/sugard
 30      3       *       *       6       /bin/sh /etc/weekly
 30      5       1       *       *       /bin/sh /etc/monthly
 00     00       *       *       *       /bin/sh $SUGARD/bin/renew-certs
+30     00       *       *       *       /bin/sh $SUGARD/bin/backup-certs
 00     00       *       *       *       /bin/sh $SUGARD/bin/get-ip2location

@@ -88,4 +88,7 @@ skipec $SUGARD/tls.names | awk '{ print $1 }' | while read x; do
 done
 
 log Installing acme-client.conf...
-install    -o root -g wheel  -m 600 $SUGARD/acme-client.conf       /etc/acme-client.conf
+install -o root -g wheel  -m 600 $SUGARD/acme-client.conf /etc/acme-client.conf
+
+log Installing backup-certs.pass...
+install -o root -g wheel -m 600 $SUGARD/backup-certs.pass /root/.backup-certs.pass

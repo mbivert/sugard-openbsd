@@ -1,0 +1,73 @@
+#!/bin/sh
+
+. `dirname $0`/sugar.lib
+
+loadconfs `dirname $0`/../ # gmail_email
+
+bd=/root/backup
+d=`date +%Y-%m-%d`
+lwd=certs-$d
+wd=$bd/$lwd
+pass=/root/.backup-certs.pass
+
+# yesterday's date, almost
+yd=`date -r $(expr $(date +"%s") - 86400) +"%Y-%m-%d"`
+ywd=$bd/certs-$yd
+
+mkdir -p $wd
+skipec $(dirname $0)/../tls.names | while read x _; do
+	cp /etc/ssl/$x.crt         $wd/$x.crt
+	cp /etc/ssl/private/$x.key $wd/$x.key
+done
+
+tar -C $bd -czf $wd.tgz $lwd/
+
+if [ -d "$ywd" ]; then
+	if diff -r $ywd/ $wd/; then
+		exit 0
+	fi
+	echo rm -rf "$ywd"
+fi
+
+openssl enc -e -aes256 -in $wd.tgz -pass file:$pass -out $wd.tgz.enc
+
+from=$gmail_email
+to=$from
+
+#(
+#	uuencode $wd.tgz.enc certs-$d.tgz.enc
+#) | mail -s "[backup] certs -- $d" -r $from $to
+
+# Stripped down from http://daemonforums.org/showthread.php?t=3480
+boundary="=======N=E=X=T===$(date | md5)=="
+
+(
+	cat <<EOF
+From: $from
+Bcc: $to
+Subject: [backup] certs -- $d
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="$boundary"
+Content-Transfer-Encoding: 7bit
+
+If you see this, either this mail has been poorly crafted,
+or your client doesn't handle well multipart emails.
+
+--$boundary
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Certificates were updated; encrypted dump of all .crt/.key.
+
+--$boundary
+Content-Type: application/octet-stream; name="certs-$d.tgz.enc"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="certs-$d.tgz.enc"
+EOF
+	openssl base64 -in $wd.tgz.enc
+
+	echo
+	echo "--$boundary--"
+	echo
+) | sendmail -t
