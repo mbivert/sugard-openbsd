@@ -8,3 +8,5 @@ setup-httpd
 setup-acme-client
 setup-cron
 setup-git
+setup-mmail
+setup-gmail

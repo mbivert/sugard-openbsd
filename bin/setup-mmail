@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Installing mmail...
+install -o root -g daemon -m 755 $SUGARD/mmail   /bin/mmail
+install -o root -g daemon -m 644 $SUGARD/mmail.1 /usr/share/man/man1/mmail.1
+
+log Updating mandoc.db...
+makewhatis /usr/share/man

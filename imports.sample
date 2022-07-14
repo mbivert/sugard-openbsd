@@ -41,8 +41,9 @@ $HOME/gits/sugard-openbsd/bin/update                bin/
 # ip2location update/installation script
 $HOME/gits/sugard-openbsd/bin/get-ip2location       bin/
 
-# gmail setup for use via mail(1)/sendmail(1)
+# gmail setup for use via mail(1)/sendmail(1) + mmail
 $HOME/gits/sugard-openbsd/bin/*setup-gmail          bin/
+$HOME/gits/sugard-openbsd/bin/*setup-mmail          bin/
 $HOME/gits/sugard-openbsd/mail/*                    mail/
 
 # Base configuration
