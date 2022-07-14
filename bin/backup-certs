@@ -4,6 +4,12 @@
 
 loadconfs `dirname $0`/../ # gmail_email
 
+# Dependencies
+if ! which mmail >/dev/null; then
+	echo 'mmail(1) not found in $PATH' 1>&2
+	exit 1
+fi
+
 bd=/root/backup
 d=`date +%Y-%m-%d`
 lwd=certs-$d
@@ -39,44 +45,9 @@ if [ -d "$ywd" ]; then
 	fi
 fi
 
-from=$gmail_email
-to=$from
+log Sending encrypted archive to $gmail_email...
+echo 'Certificates were updated; encrypted dump of all .crt/.key.' \
+	| mmail -f $gmail_email -t $gmail_email \
+	  -s "[backup] certs -- $d" $wd.tgz.enc
 
-#(
-#	uuencode $wd.tgz.enc certs-$d.tgz.enc
-#) | mail -s "[backup] certs -- $d" -r $from $to
 
-# Stripped down from http://daemonforums.org/showthread.php?t=3480
-boundary="=======N=E=X=T===$(date | md5)=="
-
-log Sending encrypted archive to $to...
-(
-	cat <<EOF
-From: $from
-Bcc: $to
-Subject: [backup] certs -- $d
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="$boundary"
-Content-Transfer-Encoding: 7bit
-
-If you see this, either this mail has been poorly crafted,
-or your client doesn't handle well multipart emails.
-
---$boundary
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Certificates were updated; encrypted dump of all .crt/.key.
-
---$boundary
-Content-Type: application/octet-stream; name="certs-$d.tgz.enc"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="certs-$d.tgz.enc"
-EOF
-	openssl base64 -in $wd.tgz.enc
-
-	echo
-	echo "--$boundary--"
-	echo
-) | sendmail -t
