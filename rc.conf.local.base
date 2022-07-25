@@ -1,2 +1,3 @@
 httpd_flags=""
 relayd_flags=""
+syslogd_flags="-Z"
