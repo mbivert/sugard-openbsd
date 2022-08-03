@@ -1,9 +1,16 @@
 #!/bin/sh
 
+set -e
+
 . `which sugar.lib`
 
 log Preparing crontabs for sync...
-mkdir -p $3/crontabs
+mkdir -p $3/crontabs/
 if [ -d $2/crontabs ]; then
-	cp  $2/crontabs/* $3/crontabs/
+	for x in $2/crontabs/*; do
+		if [ ! -e "$x" ]; then break; fi
+		y=`basename $x`
+		log Preparing $y crontab for sync...
+		samurai $3 $x > $3/crontabs/$y
+	done
 fi

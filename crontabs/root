@@ -3,6 +3,7 @@ SHELL=/bin/sh
 HOME=/var/log
 SUGARD=/var/sugard
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/var/sugard/bin
+MAILTO=%%gmail_email%%
 #
 #minute hour    mday    month   wday    [flags] command
 #
