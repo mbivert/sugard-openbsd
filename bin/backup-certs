@@ -35,7 +35,7 @@ openssl enc -e -aes256 -in $wd.tgz -pass file:$pass -out $wd.tgz.enc
 
 log Removing old copies...
 ls $bd | grep -v $ylwd | grep -v $lwd | while read x; do
-	rm -rf "$x"
+	rm -rf "$bd/$x"
 done
 
 if [ -d "$ywd" ]; then
