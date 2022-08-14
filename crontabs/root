@@ -19,3 +19,4 @@ MAILTO=%%gmail_email%%
 00     00       *       *       *       /bin/sh $SUGARD/bin/renew-certs     >/dev/null
 30     00       *       *       *       /bin/sh $SUGARD/bin/backup-certs    >/dev/null
 00     00       *       *       *       /bin/sh $SUGARD/bin/get-ip2location >/dev/null
+45     23       *       *       *       /bin/sh $SUGARD/bin/daily           >/dev/null

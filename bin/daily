@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+. `dirname $0`/sugar.lib
+
+loadconfs $(dirname $0)/../ # $gmail_email
+
+if ! which mmail >/dev/null; then exit 1; fi
+
+body=`mktemp /tmp/daily.XXXXXX`
+
+ls `dirname $0`/daily-* | sort -n | while read x; do
+	if [ ! -x "$x" ]; then continue; fi
+	log Running `basename $x`...
+	sh $x >> $body
+done
+
+today=`date "+%Y-%m-%d"`
+
+(echo '<pre>'; cat $body; echo '</pre>') \
+	| mmail                              \
+		-f $gmail_email -t $gmail_email  \
+		-s "[daily] $today"              \
+		-y "Content-Type: text/html; charset=UTF-8"
+rm -f $body

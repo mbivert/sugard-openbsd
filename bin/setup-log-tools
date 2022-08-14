@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. `which sugar.lib`
+
+log Install logtag/logtweak/iploc...
+install -o root -g wheel -m 755 $SUGARD/log-tools/logtweak /bin/logtweak
+install -o root -g wheel -m 755 $SUGARD/log-tools/logtag   /bin/logtag
+install -o root -g wheel -m 755 $SUGARD/log-tools/iploc    /bin/iploc

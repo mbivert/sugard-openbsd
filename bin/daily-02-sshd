@@ -1,0 +1,52 @@
+#!/bin/sh
+
+. `dirname $0`/sugar.lib
+
+# logs starts by abbreviated month name followed by day
+# of the month number. There's some padding on day number
+# that date(1) can't performed.
+#
+# NOTE: this is for non-ISO (NOT syslogd_flags="-Z" in /etc/rc.conf.local)
+# There are other bits of similarly commented code later
+#m=`date +%b`
+#d=`date +%d`
+
+today=`date "+%Y-%m-%d"`
+
+zcat -f /var/log/authlog /var/log/authlog.0.gz |  awk '
+# Only keep today related lines
+#$1 != "'$m'" || $2 != '$d' { next; }
+! /^'$today'/ { next; }
+
+# 2022-08-13T16:49:19.104Z main sshd[1]: Accepted publickey for root from 12.12.13.13 port 59671 ssh2: ...
+
+# Successfull incoming connection (user, ip)
+/Accepted publickey for/ {
+#	ins[$9 "@" $11]++
+	ins[$7 "@" $9]++
+}
+
+# 2022-08-13T01:09:37.101Z main sshd[1]: Connection closed by 167.248.133.120 port 45824 [preauth]
+# Failed connection (ip)
+/Connection closed by [0-9]/ {
+#	fails[$9]++
+	fails[$7]++
+}
+
+# Server being started
+/Server listening on 0.0.0.0 port [0-9]+/ {
+	nr++
+}
+
+END {
+	print "# ------------------- SSHD -------------------"
+	for (u in ins)
+		printf("  %-25s %15s %5d times\n", u, "connected", ins[u])
+
+	for (ip in fail)
+		printf("  %-25s %15s %5d times\n", ip, "failed", fails[ip])
+
+	printf("  %-25s %15s %5d times\n", "sshd", "restarted", nr)
+	print ""
+}
+'

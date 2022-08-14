@@ -1,0 +1,28 @@
+#!/bin/sh
+
+. `which sugar.lib`
+loadconfs $3 # $gitsd_dir
+
+d=$gits_dir/log-tools/
+
+log Compiling logtag/logtweak/iploc...
+quietrun env GOOS=openbsd GOARCH=amd64 make -C $d -B all
+
+mkdir -p $3/log-tools/
+if [ -f "$2/log-tools/rules.json" ]; then
+	log Preparing rules.json for sync...
+	cp $2/log-tools/rules.json $3/log-tools/rules.json
+fi
+
+if [ -f "$2/log-tools/httpd-stats" ]; then
+	log Preparing httpd-stats for sync...
+	cp $2/log-tools/httpd-stats $3/log-tools/
+fi
+
+# NOTE: mv(1) because we don't want to keep OpenBSD
+# executables around here.
+log Preparing log-tools scripts for sync...
+for x in logtweak logtag iploc; do
+	mv $d/$x $3/log-tools/
+done
+

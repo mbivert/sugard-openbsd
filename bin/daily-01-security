@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+. `dirname $0`/sugar.lib
+
+out=/root/sugard.security.out
+
+# don't exit on failure here
+set +e; /usr/libexec/security > $out;set -e
+
+if [ -s $out ]; then
+	echo '# ----------------- SECURITY -----------------'
+	sed 's/^/  /g' $out
+	echo ''
+	rm $out
+fi

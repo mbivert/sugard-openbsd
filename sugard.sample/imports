@@ -46,6 +46,16 @@ $HOME/gits/sugard-openbsd/bin/*setup-gmail          bin/
 $HOME/gits/sugard-openbsd/bin/*setup-mmail          bin/
 $HOME/gits/sugard-openbsd/mail/*                    mail/
 
+# log-tools setup
+$HOME/gits/sugard-openbsd/bin/*setup-log-tools       bin/
+
+# daily scripts
+$HOME/gits/sugard-openbsd/bin/daily                 bin/
+$HOME/gits/sugard-openbsd/bin/daily-01-security     bin/
+$HOME/gits/sugard-openbsd/bin/daily-02-sshd         bin/
+$HOME/gits/sugard-openbsd/bin/daily-03-disk         bin/
+$HOME/gits/sugard-openbsd/bin/daily-04-httpd        bin/
+
 # Base configuration
 $HOME/gits/sugard-openbsd/config                    bin/config.base
 
