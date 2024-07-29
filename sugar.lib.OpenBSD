@@ -35,23 +35,16 @@ assertgroup() {
 	fi
 }
 
-# Assert a given service is enabled
+# Assert a given service is enabled (i.e. configured
+# to start on boot)
 #
 # Input:
 #	$1: service name
 # Output:
 #	Exit on error
 assertenabled() {
-	# Special case
-	x=1
-	if [ "$1" == "pf" ]; then
-		rcctl get pf | grep -qF 'pf=YES'
-		x=$?
-	else
-		rcctl get $1 | grep -F $1_flags | grep -vqF $1'_flags=NO'
-		x=$?
-	fi
-	if [ $x != "0" ]; then
+	rcctl get "$1" status
+	if [ "$?" != "0" ]; then
 		fail "$1 not enabled"
 	fi
 }
